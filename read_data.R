@@ -10,6 +10,7 @@ View(status_dig)
 # remove columns with only one unique value
 one_unique <- which(status_dig$unique==1)
 digits_train <- digits_train[,-one_unique]
+save(digits_train, digits_train_labels, file = "data/digits.rds")
 
 
 artif_train <- read.table("data/artificial_train.data")
