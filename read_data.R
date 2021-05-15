@@ -11,7 +11,7 @@ View(status_dig)
 one_unique <- which(status_dig$unique==1)
 digits_train <- digits_train[,-one_unique]
 save(digits_train, digits_train_labels, file = "data/digits.rds")
-
+load("data/digits.rds")
 
 artif_train <- read.table("data/artificial_train.data")
 artif_train_labels <- read.table("data/artificial_train.labels")
@@ -19,3 +19,5 @@ artif_train_labels <- read.table("data/artificial_train.labels")
 status_art <- status(artif_train)
 View(status_art)
 which(status_art$unique==1)
+
+save(artif_train, artif_train_labels, file = "data/artificial.rds")
