@@ -3,7 +3,7 @@ library(randomForest)
 library(FSelector)
 library(caret)
 library(dplyr)
-
+library(rmcfs)
 # data preparation --------------------------------------------------------
 
 load("data/artificial.rds")
@@ -146,3 +146,43 @@ sa_obj <- safs(x=artif[1:500,] %>% select(-y),
                iters = 20)
 
 sa_obj$optVariables
+# AIC BIC -----------------------------------------------------------------
+
+# y not as facor
+base_model <- glm(y~1, data=cbind(artif_train, y=ifelse(artif_train_labels$y>0, 1, 0)), family="binomial")
+full_model <- glm(y~., data=cbind(artif_train, y=ifelse(artif_train_labels$y>0, 1, 0)), family="binomial")
+
+# slow
+step_AIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=2)
+names(step_AIC$coefficients)[-1]
+
+step_BIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=log(nrow(artif_train)))
+names(step_BIC$coefficients)[-1]
+
+var_imp_AIC <- function(data){
+  data$y <- ifelse(data$y>0, 1, 0)
+  base_model <- glm(y~1, data=data, family="binomial")
+  full_model <- glm(y~., data=data, family="binomial")
+  step_AIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=2)
+  return(names(step_AIC$coefficients)[-1])
+}
+
+var_imp_BIC <- function(data){
+  data$y <- ifelse(data$y>0, 1, 0)
+  base_model <- glm(y~1, data=data, family="binomial")
+  full_model <- glm(y~., data=data, family="binomial")
+  step_BIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=nrow(data))
+  return(names(step_AIC$coefficients)[-1])
+}
+
+
+# MCFS --------------------------------------------------------------------
+
+model_mcfs <- mcfs(y~., data=artif)
+model_mcfs$RI$attribute
+
+var_imp_mcfs <- function(data){
+  model_mcfs <- mcfs(y~., data=data, cutoffPermutations=0)
+  return(model_mcfs$RI$attribute[1:model_mcfs$cutoff_value])
+}
+
