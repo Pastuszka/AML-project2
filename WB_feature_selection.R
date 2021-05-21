@@ -103,7 +103,7 @@ var_imp_rfe <- function(data, n=10){
 # plot(sa_obj)
 # AIC BIC -----------------------------------------------------------------
 var_imp_AIC <- function(data){
-  data$y <- ifelse(data$y>0, 1, 0)
+  data$y <- as.numeric(data$y)-1
   base_model <- glm(y~1, data=data, family="binomial")
   full_model <- glm(y~., data=data, family="binomial")
   step_AIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=2)
@@ -111,11 +111,11 @@ var_imp_AIC <- function(data){
 }
 
 var_imp_BIC <- function(data){
-  data$y <- ifelse(data$y>0, 1, 0)
+  data$y <- as.numeric(data$y)-1
   base_model <- glm(y~1, data=data, family="binomial")
   full_model <- glm(y~., data=data, family="binomial")
   step_BIC <- step(base_model, scope = list(lower = base_model, upper = full_model), direction = "both", trace = 1, steps = 1000, k=nrow(data))
-  return(names(step_AIC$coefficients)[-1])
+  return(names(step_BIC$coefficients)[-1])
 }
 
 

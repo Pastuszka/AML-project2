@@ -34,4 +34,6 @@ vi_bic <- var_imp_BIC(artif)
 
 
 # MCFS
-vi_mcsf <- var_imp_mcfs(artif)
+# doesn't work
+# somehow changes working directory
+# vi_mcsf <- var_imp_mcfs(artif)
