@@ -46,6 +46,7 @@ var_imp_DALEX <- function(data, n=10, biggest_diff=TRUE){
 # Correlation feature importance ----------------------------------------------
 
 var_imp_corr <- function(data, type='pearson', n=10, biggest_diff=TRUE){
+  data$y <- as.numeric(data$y)-1
   X <- subset(data, select = -c(y))
   y <- subset(data, select = c(y))
   var_imp <- abs(cor(X, y = y, method = type))

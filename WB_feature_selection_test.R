@@ -16,7 +16,7 @@ vi_rf_acc <- var_imp_rf_acc(artif)
 vi_rf_gini <- var_imp_rf_gini(artif)
 
 # chi square test
-iv_chisq <- var_imp_chisq(artif)
+vi_chisq <- var_imp_chisq(artif)
 
 # entropy-based
 vi_inf_gain <- var_imp_inf_gain(artif)
@@ -34,4 +34,10 @@ vi_bic <- var_imp_BIC(artif)
 
 
 # MCFS
-vi_mcsf <- var_imp_mcfs(artif)
+# doesn't work
+# somehow changes working directory
+# actually works but not on whole dataset
+vi_mcfs1 <- var_imp_mcfs(artif[,c(1:400, 501)])
+vi_mcfs2 <- var_imp_mcfs(artif[,c(301:500, 501)])
+
+vi_mcfs <- c(vi_mcfs1, vi_mcfs2)
