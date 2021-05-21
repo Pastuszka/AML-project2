@@ -46,6 +46,7 @@ get_important_columns <- function(data){
                          'vi_bic', 
                          'vi_corr',
                          'vi_caret',
+                         'vi_chisq',
                          'vi_gain_rat', 
                          'vi_inf_gain', 
                          'vi_lasso', 
