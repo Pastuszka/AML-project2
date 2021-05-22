@@ -5,7 +5,7 @@ test_model <- function(dataset, learner, search_space){
   
   task <- TaskClassif$new(id = "test_task", backend = dataset, target = "y")
   
-  terminator = trm("evals", n_evals = 20)
+  terminator = trm("evals", n_evals = 50)
   
   rdesc = rsmp("cv", folds = 5)
   
@@ -60,7 +60,7 @@ test_xgboost <- function(dataset){
   learner <- lrn("classif.xgboost")
   
   search_space = ps(
-    nrounds = p_int(lower = 1, upper  = 500),
+    nrounds = p_int(lower = 100, upper  = 500),
     eta = p_dbl(lower = 0.01, upper = 1),
     gamma = p_dbl(lower = 0, upper = 10),
     max_depth = p_int(lower = 1, upper = 100),
@@ -107,4 +107,59 @@ test_nnet <- function(dataset){
   test_model(dataset, learner, search_space)
 }
 
+test_kknn <- function(dataset){
+  
+  learner <- lrn("classif.kknn")
+  
+  search_space = ps(
+    k = p_int(lower = 1, upper  = 20),
+    kernel = p_fct(levels = c('rectangular', "triangular", "epanechnikov", "biweight",
+                              "triweight", "cos", "inv", "gaussian"))
+  )
+  
+  test_model(dataset, learner, search_space) 
+}
 
+test_lda <- function(dataset){
+  
+  learner <- lrn("classif.lda")
+  
+  search_space = ps(
+    method = p_fct(levels = c('moment', "mle", "mve"))
+  )
+  
+  test_model(dataset, learner, search_space) 
+}
+
+test_qda <- function(dataset){
+  
+  learner <- lrn("classif.qda")
+  
+  search_space = ps(
+    method = p_fct(levels = c('moment', "mle", "mve"))
+  )
+  
+  test_model(dataset, learner, search_space) 
+}
+
+test_glm <- function(dataset){
+  
+  learner <- lrn("classif.glmnet")
+  
+  search_space = ps(
+    alpha = p_dbl(lower=0, upper=1)
+  )
+  
+  test_model(dataset, learner, search_space) 
+}
+
+test_naive_bayes <- function(dataset){
+  
+  learner <- lrn("classif.naive_bayes")
+  
+  search_space = ps(
+    laplace = p_dbl(lower=0, upper=100)
+  )
+  
+  test_model(dataset, learner, search_space) 
+}
