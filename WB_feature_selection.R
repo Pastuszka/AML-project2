@@ -1,5 +1,6 @@
 library(adabag)
 library(randomForest)
+library(ranger)
 library(FSelector)
 library(caret)
 library(dplyr)
@@ -29,6 +30,20 @@ var_imp_rf_gini <- function(data, n=10, biggest_diff=TRUE){
   var_imp_gini <- as.data.frame(model$importance) %>% select(MeanDecreaseGini) %>% arrange(-MeanDecreaseGini)
   if (biggest_diff) return(cutoff.biggest.diff(var_imp_gini))
   else return(cutoff.k(var_imp_gini,n))
+}
+
+var_imp_ranger_impurity <- function(data, n=10, biggest_diff=TRUE){
+  model <- ranger(y~., data = data, importance='impurity_corrected')
+  var_imp_acc <- as.data.frame(model$variable.importance)
+  if (biggest_diff) return(cutoff.biggest.diff(var_imp_acc))
+  else return(cutoff.k(var_imp_acc,n))
+}
+
+var_imp_ranger_perm <- function(data, n=10, biggest_diff=TRUE){
+  model <- ranger(y~., data = data, importance='permutation')
+  var_imp_acc <- as.data.frame(model$variable.importance)
+  if (biggest_diff) return(cutoff.biggest.diff(var_imp_acc))
+  else return(cutoff.k(var_imp_acc,n))
 }
 
 
