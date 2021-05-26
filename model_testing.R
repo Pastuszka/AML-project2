@@ -150,9 +150,21 @@ subset_digits <- digits[, imp_columns$selected_cols]
 digits_boruta <- var_imp_boruta(digits)
 
 save(digits_boruta, file='digits_boruta.rds')
+load("digits_boruta.rds")
 
 col_digits_boruta <- c(digits_boruta, 'y')
 
 subset_digits_boruta <- digits[,col_digits_boruta]
 
-artif_boruta_models <- test_all_models(subset_artif_boruta)
+digits_boruta_models <- test_all_models(subset_digits_boruta)
+
+source("digits_feature_selection.R")
+
+selected_features_dgt <- c(selected_features_dgt, vi_rf_gini_dgt, vi_rf_acc_dgt, vi_ran_imp_dgt, vi_ran_perm_dgt, vi_chisq_dgt, vi_lasso_dgt, vi_lasso_1se_dgt)
+
+sorted_features <- sort(table(selected_features_dgt), decreasing = TRUE)
+
+top_features <- names(sorted_features)[which(sorted_features>2)]
+
+subset_digits1 <- digits[, c(top_features, "y")]
+digits_models1 <- test_all_models(subset_digits1)
