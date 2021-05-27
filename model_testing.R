@@ -168,3 +168,10 @@ top_features <- names(sorted_features)[which(sorted_features>2)]
 
 subset_digits1 <- digits[, c(top_features, "y")]
 digits_models1 <- test_all_models(subset_digits1)
+
+
+selected_features_dgt2 <- c(selected_features_dgt, digits_boruta)
+sorted_features2 <- sort(table(selected_features_dgt2), decreasing = TRUE)
+top_features2 <- names(sorted_features2)[which(sorted_features2>4)]
+subset_digits2 <- digits[, c(top_features2, "y")]
+digits_models2 <- test_all_models(subset_digits2)
