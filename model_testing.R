@@ -169,6 +169,9 @@ top_features <- names(sorted_features)[which(sorted_features>2)]
 subset_digits1 <- digits[, c(top_features, "y")]
 digits_models1 <- test_all_models(subset_digits1)
 
+corrplot::corrplot(cor(as.matrix(digits[, top_features])), method = "number", number.cex=0.5)
+corrplot::corrplot(cor(as.matrix(digits[, top_features])), method = "square")
+
 
 selected_features_dgt2 <- c(selected_features_dgt, digits_boruta)
 sorted_features2 <- sort(table(selected_features_dgt2), decreasing = TRUE)
