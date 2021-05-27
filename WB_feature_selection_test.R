@@ -38,6 +38,6 @@ vi_bic <- var_imp_BIC(artif)
 # somehow changes working directory
 # actually works but not on whole dataset
 vi_mcfs1 <- var_imp_mcfs(artif[,c(1:400, 501)])
-vi_mcfs2 <- var_imp_mcfs(artif[,c(301:500, 501)])
+vi_mcfs2 <- var_imp_mcfs(artif[,c(401:500, 501)])
 
 vi_mcfs <- c(vi_mcfs1, vi_mcfs2)
