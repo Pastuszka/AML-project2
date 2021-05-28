@@ -1,6 +1,6 @@
 source('test_models.R')
 source("utils.R")
-
+library(dplyr)
 # artificial --------------------------------------------------------------
 load("data/artificial.rds")
 colnames(artif_train_labels) <- "y"
@@ -178,3 +178,19 @@ sorted_features2 <- sort(table(selected_features_dgt2), decreasing = TRUE)
 top_features2 <- names(sorted_features2)[which(sorted_features2>4)]
 subset_digits2 <- digits[, c(top_features2, "y")]
 digits_models2 <- test_all_models(subset_digits2)
+
+
+subset_digits3 <- digits[, c(top_features, "y")] %>% select(-V339, -V4413)
+digits_models3 <- test_all_models(subset_digits3)
+
+
+# artif again -------------------------------------------------------------
+
+selected_features_artif <- c(praznik_cols, vi_rf_gini_artif, vi_rf_acc_artif, vi_ran_imp_artif, vi_ran_perm_artif, vi_chisq_artif, vi_lasso_artif, vi_lasso_1se_artif)
+
+sorted_features_artif <- sort(table(selected_features_artif), decreasing = TRUE)
+
+top_features_artif <- names(sorted_features_artif)[which(sorted_features_artif>4)]
+
+subset_artif2<- artif[, c(top_features_artif, "y")]
+artif_models2 <- test_all_models(subset_artif2)
