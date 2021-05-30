@@ -55,10 +55,6 @@ var_imp_chisq <- function(data, n=10, biggest_diff=TRUE){
   else return(cutoff.k(weights,n))
 }
 
-# consistency-based --------------------------------------------------------
-
-# cons <- consistency(y~., data=artif) # slow
-
 
 # entropy-based -----------------------------------------------------------
 
@@ -87,7 +83,7 @@ var_imp_rfe <- function(data, n=10){
                         repeats = 3, # number of repeats
                         number = 5) # number of folds
   
-  # wolne
+  # slow
   result_rfe1 <- rfe(x = data %>% select(-y), 
                      y = as.factor(data$y), 
                      sizes = c(n),
@@ -97,25 +93,6 @@ var_imp_rfe <- function(data, n=10){
 }
 
 
-# simulated annealing -----------------------------------------------------
-
-# very slow
-# Define control function
-# sa_ctrl <- safsControl(functions = rfSA,
-#                        method = "repeatedcv",
-#                        number=5,
-#                        repeats = 2,
-#                        improve = 5, verbose=TRUE) # n iterations without improvement before a reset
-# 
-# # Genetic Algorithm feature selection
-# set.seed(100)
-# sa_obj <- safs(x=artif %>% select(-y), 
-#                y=artif$y,
-#                safsControl = sa_ctrl,
-#                iters = 10)
-# 
-# sa_obj$optVariables
-# plot(sa_obj)
 # AIC BIC -----------------------------------------------------------------
 var_imp_AIC <- function(data){
   data$y <- as.numeric(data$y)-1

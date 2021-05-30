@@ -17,7 +17,7 @@ test_xgboost(subset_artif)
 test_rpart(subset_artif)
 test_svm(subset_artif)
 
-test_nnet(subset_artif) # sounds good, doesn't work (literally)
+
 optim_kknn <- test_kknn(subset_artif) # good results
 test_lda(subset_artif) # poor results
 test_qda(subset_artif) # poor results
@@ -55,88 +55,6 @@ artif_boruta_models <- test_all_models(subset_artif_boruta)
 
 corrplot::corrplot(cor(as.matrix(subset(subset_artif_boruta, select=-c(y)))))
 
-col_boruta_decor <- c("V29",  "V49",  "V65",  "V106", "V154",
-                      #"V242",
-                "V339", "V443", "V454",
-                "V456", 'y')
-
-subset_artif_boruta_decor <- artif[,col_boruta_decor]
-corrplot::corrplot(cor(as.matrix(subset(subset_artif_boruta_decor, select=-c(y)))))
-
-artif_boruta_decor_models <- test_all_models(subset_artif_boruta_decor)
-
-col_boruta_decor2 <- c("V29",  "V49",  "V65",  "V106", "V154",
-                       "V443", "V454",
-                      "V456", 'y')
-
-subset_artif_boruta_decor2 <- artif[,col_boruta_decor2]
-corrplot::corrplot(cor(as.matrix(subset(subset_artif_boruta_decor2, select=-c(y)))))
-
-artif_boruta_decor2_models <- test_all_models(subset_artif_boruta_decor2)
-
-col_boruta_decor3 <- c("V29",  "V49",  "V65",  "V106", "V154",
-                       "V443", "V454",
-                       #"V456",
-                       'y')
-
-subset_artif_boruta_decor3 <- artif[,col_boruta_decor3]
-corrplot::corrplot(cor(as.matrix(subset(subset_artif_boruta_decor3, select=-c(y)))))
-
-artif_boruta_decor3_models <- test_all_models(subset_artif_boruta_decor3)
-
-
-col_boruta_decor4 <- c("V29",  "V49",  "V65",  "V106", "V154",
-                        "V454",
-                       
-                       'y')
-
-subset_artif_boruta_decor4 <- artif[,col_boruta_decor4]
-corrplot::corrplot(cor(as.matrix(subset(subset_artif_boruta_decor4, select=-c(y)))))
-
-artif_boruta_decor4_models <- test_all_models(subset_artif_boruta_decor4)
-
-drop_1_var_knn <- function(dataset){
-  vars <- colnames(dataset)
-  accuracies <- data.frame(accuracy=numeric())
-  for(var in vars){
-    if(var == 'y') next
-    sub_dataset <- dataset[ , -which(names(dataset) %in% c(var))]
-    test_result <- test_kknn(sub_dataset)
-    accuracies[var,] <- test_result$result$classif.bacc
-  }
-  accuracies
-}
-
-drop1 <- drop_1_var_knn(subset_artif_boruta)
-
-greedy_knn_selection <- function(dataset){
-  steps <- data.frame(dropped = character(), score = numeric())
-  best_score <- -Inf
-  while(ncol(dataset) > 1){
-    result <- drop_1_var_knn(dataset)
-    max_result <- which.max(result$accuracy)
-    cur_score <- result[max_result,'accuracy']
-    cur_col <- rownames(result)[max_result]
-    if(cur_score > best_score){
-      best_score <- cur_score
-      dataset <- dataset[ , -which(names(dataset) %in% c(cur_col))]
-      steps[length(steps)+1, 'dropped'] <- cur_col
-      steps[length(steps)+1, 'score'] <- cur_score
-    }else{
-      break
-    }
-  }
-  steps
-}
-
-col_boruta_drop1 <- c( "V49",  "V65",  "V106", "V129", "V154", "V242", "V282",
-                       "V319", "V337", "V339", "V379", "V434", "V443", "V452", "V454",
-                      "V456", "V473", "V476", "V494", 'y')
-
-subset_boruta_drop1 <- artif[,col_boruta_drop1]
-
-greedy_result <- greedy_knn_selection(subset_boruta_drop1) # dropped v129
-
  # digits ------------------------------------------------------------------
 
 load("data/digits.rds")
@@ -158,6 +76,10 @@ subset_digits_boruta <- digits[,col_digits_boruta]
 
 digits_boruta_models <- test_all_models(subset_digits_boruta)
 
+
+# digits - ensemble of feature selection - classification --------------------------
+
+
 source("digits_feature_selection.R")
 
 selected_features_dgt <- c(selected_features_dgt, vi_rf_gini_dgt, vi_rf_acc_dgt, vi_ran_imp_dgt, vi_ran_perm_dgt, vi_chisq_dgt, vi_lasso_dgt, vi_lasso_1se_dgt)
@@ -172,19 +94,12 @@ digits_models1 <- test_all_models(subset_digits1)
 corrplot::corrplot(cor(as.matrix(digits[, top_features])), method = "number", number.cex=0.5)
 corrplot::corrplot(cor(as.matrix(digits[, top_features])), method = "square")
 
-
-selected_features_dgt2 <- c(selected_features_dgt, digits_boruta)
-sorted_features2 <- sort(table(selected_features_dgt2), decreasing = TRUE)
-top_features2 <- names(sorted_features2)[which(sorted_features2>4)]
-subset_digits2 <- digits[, c(top_features2, "y")]
-digits_models2 <- test_all_models(subset_digits2)
-
-
 subset_digits3 <- digits[, c(top_features, "y")] %>% select(-V339, -V4413)
 digits_models3 <- test_all_models(subset_digits3)
 
 
-# artif again -------------------------------------------------------------
+# artificial - ensemble of feature selection   -------------------------------------------------------------
+source("artif_feature_selection.R")
 
 selected_features_artif <- c(praznik_cols, vi_rf_gini_artif, vi_rf_acc_artif, vi_ran_imp_artif, vi_ran_perm_artif, vi_chisq_artif, vi_lasso_artif, vi_lasso_1se_artif)
 
