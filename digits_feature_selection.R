@@ -8,9 +8,6 @@ colnames(digits_train_labels) <- "y"
 digits <- cbind(digits_train, y=as.factor(digits_train_labels$y))
 
 
-# Bagging feature importance
-# too slow
-# vi_bagging_dgt <- var_imp_bagging(digits)
 
 # Random Forest feature importance
 model_rf_dgt <- randomForest(y~., data = digits, importance=TRUE)
@@ -35,38 +32,14 @@ weights_dgt <- weights_dgt %>% arrange(-attr_importance) %>% filter(attr_importa
 barplot(weights_dgt$attr_importance[1:17])
 vi_gain_rat_dgt2 <- rownames(weights_dgt)[1:17]
 entropy_fs_models_dgt <- test_all_models(digits[, c(vi_gain_rat_dgt2, "y")])
-# Recursive feature elimination
-# too slow
-# vi_rfe_dgt <- var_imp_rfe(digits)
-
-# AIC bIC
 
 
-# MCFS
-# doesn't work
-# somehow changes working directory
-# actually works but not on whole dataset
-# vi_mcfs1_dgt <- var_imp_mcfs(digits[,c(1:400, 4956)])
-# vi_mcfs2_dgt <- var_imp_mcfs(artif[,c(401:500, 501)])
-# vi_mcfs <- c(vi_mcfs1, vi_mcfs2)
+# lasso feature selection -------------------------------------------------
+
 
 vi_lasso_dgt <- var_imp_lasso(digits)
 vi_lasso_1se_dgt <- var_imp_lasso(digits)
 
-# Caret feature importance
-#slow
-# vi_caret_dgt <- var_imp_caret(digits)
-
-#DALEX feature importance-srance
-#slow but that's fine because it doesn't work anyway
-# vi_dalex <- var_imp_DALEX(artif) #broken dunskie warchlaki doesn't work
-
-#Correlation feature importance
-# vi_corr_dgt <- var_imp_corr(digits[1:1000,])
-
-#Boruta feature importance
-#kinda slow
-# vi_boruta_dgt <- var_imp_boruta(digits)
 
 # MRMR
 library(praznik)

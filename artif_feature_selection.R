@@ -67,10 +67,6 @@ funModeling::cross_plot(artif[, c("V49", "V379","y")], target = "y")
 funModeling::plotar(artif[, c("V49", "V379","y")], target = "y", plot_type = "histdens")
 
 
-
-#Boruta feature importance
-# vi_boruta_artif <- var_imp_boruta(artif)
-
 # MRMR
 library(praznik)
 vi_mrmr_artif <- MRMR(X=artif %>% select(-y), Y=artif$y, k=40)
