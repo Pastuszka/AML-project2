@@ -26,6 +26,17 @@ table(c(vi_rf_gini_artif, vi_rf_acc_artif, vi_ran_imp_artif, vi_ran_perm_artif, 
 
 rf_fs_models <- test_all_models(artif[, c(vi_ran_perm_artif, "y")])
 
+
+# chi square test ---------------------------------------------------------
+
+vi_chisq_artif <- var_imp_chisq(artif)
+
+
+# lasso -------------------------------------------------------------------
+
+vi_lasso_artif <- var_imp_lasso(artif)
+vi_lasso_1se_artif <- var_imp_lasso(artif)
+
 # entropy-based -----------------------------------------------------------
 
 weights_artif <- gain.ratio(y~., data=artif)
